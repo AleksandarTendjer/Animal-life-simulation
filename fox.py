@@ -34,7 +34,7 @@ class Fox(Animal):
 		"""
 
 		# Generate all entities in sight
-		foodlist, rabbitlist, foxlist = self.sight_entities()
+		foodlist, rabbitlist, foxlist, waterlist = self.sight_entities()
 
 		if self.state == State.ROAM or self.hunger <= 50:
 			# Find closest Rabbit
@@ -102,14 +102,41 @@ class Fox(Animal):
 						self.pos[0] + ((self.target.pos[0] - self.pos[0]) * ratio),
 						self.pos[1] + ((self.target.pos[1] - self.pos[1]) * ratio)
 						)
+			#drink
+			elif self.state==State.ROAM or self.thirst<=50:
+				# Find closest water
+				if waterlist:
+					self.target = waterlist[0]
+				
+				dist_to_target = distance(self.pos, self.target.pos)
+				# Jump directly to Food if possible
+				if dist_to_target <= self.speed:
+					self.pos = self.target.pos
+					#]self.world.food.remove(self.target)
+					self.target = None
+					self.drink(25)
+				# Change state to REPRODUCE if Rabbit ate 2 Food
+					if self.drink_count % 2 == 0 and self.drink_count != self._water_checkpoint:
+						self._drink_checkpoint_checkpoint = self.drink_count
+						self.state = State.REPRODUCE
+				# Take intermediate steps to water
+				else:
+					ratio = self.speed / dist_to_target
+					self.pos = (
+						self.pos[0] + ((self.target.pos[0] - self.pos[0]) * ratio),
+						self.pos[1] + ((self.target.pos[1] - self.pos[1]) * ratio)
+						)
+			
 			else:
 				self.roam_move()
 		
 		# Calculate hunger after movement
 		self.hunger -= 0.25
-		if self.hunger <= 0:
+		self.thirst -= 0.30
+		if self.hunger <= 0 or self.thirst<=0:
 			self.world.foxes.remove(self)
-
+			# Calculate thirst after movement
+		
 	def draw(self, screen: pygame.Surface):
 		"""
 		Draws Fox to the screen
@@ -118,3 +145,4 @@ class Fox(Animal):
 			screen (pygame.Surface): The pygame surface
 		"""
 		screen.blit(WOLF_IMAGE, (self.pos[0] - WOLF_SIZE/2, self.pos[1] - WOLF_SIZE/2))
+	

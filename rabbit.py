@@ -36,9 +36,9 @@ class Rabbit(Animal):
 		"""
 
 		# Generate all entities in sight
-		foodlist, rabbitlist, foxlist = self.sight_entities()
+		foodlist, rabbitlist, foxlist,waterlist = self.sight_entities()
 
-		# Check if any Wolves nearby
+		# Check if any foxes nearby
 		if foxlist:
 			# Average point of all nearby foxes
 			avgpoint = (
@@ -130,48 +130,40 @@ class Rabbit(Animal):
 						self.pos[0] + ((self.target.pos[0] - self.pos[0]) * ratio),
 						self.pos[1] + ((self.target.pos[1] - self.pos[1]) * ratio)
 						)
-			else:
-				self.roam_move()
-		"""elif self.state == State.ROAM or self.thirst <= 50:
-				# Find closest Food
-			if waterlist:
-				self.target = waterlist[0]
-
-			# Check if target still exists
-			if (self.target is not None) and (self.target in self.world.water):
+			elif self.state==State.ROAM or self.thirst<=50:
+				# Find closest water
+				if waterlist:
+					self.target = waterlist[0]
+				
 				dist_to_target = distance(self.pos, self.target.pos)
-
 				# Jump directly to Food if possible
 				if dist_to_target <= self.speed:
 					self.pos = self.target.pos
 					#]self.world.food.remove(self.target)
 					self.target = None
-
 					self.drink(30)
-					# Change state to REPRODUCE if Rabbit ate 2 Food
+				# Change state to REPRODUCE if Rabbit drank 2 times
 					if self.drink_count % 2 == 0 and self.drink_count != self._water_checkpoint:
 						self._drink_checkpoint_checkpoint = self.drink_count
 						self.state = State.REPRODUCE
-				# Take intermediate steps to food
+				# Take intermediate steps to water
 				else:
 					ratio = self.speed / dist_to_target
 					self.pos = (
 						self.pos[0] + ((self.target.pos[0] - self.pos[0]) * ratio),
 						self.pos[1] + ((self.target.pos[1] - self.pos[1]) * ratio)
 						)
-			# Make a random movement towards movement angle
+				
 			else:
-				self.roam_move()"""
-
+				self.roam_move()
+		
 		# Calculate hunger after movement
 		self.hunger -= 0.25
-		if self.hunger <= 0:
+		# Calculate thirst after movement
+		self.thirst -= 0.40
+		if self.hunger <= 0 or self.thirst<=0:
 			self.world.rabbits.remove(self)
 
-		# Calculate thirst after movement
-		"""self.thirst -= 0.25
-		if self.thirst <= 0:
-			self.world.rabbits.remove(self)"""
 		
 				
 	def draw(self, screen: pygame.Surface) -> None:

@@ -2,6 +2,8 @@ from worldtools import *
 from enum import Enum
 from math import sin, cos, pi
 from random import uniform
+from random import choice
+import time
 
 class State(Enum):
 	ROAM = 0
@@ -69,7 +71,7 @@ class Animal:
 
 		raise NotImplementedError()
 
-	def sight_entities(self) -> (["Food"], ["Rabbit"], ["Fox"]):
+	def sight_entities(self) -> (["Food"], ["Rabbit"], ["Fox"],["Water"]):
 		"""
 		Returns all entites in vision of the Animal
 
@@ -84,6 +86,16 @@ class Animal:
 		foodlist = []
 		for food in self.world.food:
 			if self != food and self._in_sight(food):	foodlist.append(food)
+
+		#get water around self 
+		waterlist=[]
+		#for water in self.world.watercells:
+		#	water.pos=(water.x,water.y)
+		#	if self!=water and self._in_sight(water): waterlist.append(water)
+		for i in list(range(0,25)):
+			water=choice(self.world.watercells)
+			water.pos=(water.x,water.y)
+			waterlist.append(water)
 
 		# Get rabbits around self
 		rabbitlist = []
@@ -103,9 +115,9 @@ class Animal:
 		foodlist.sort(key=lambda x: distance(self.pos, x.pos))
 		rabbitlist.sort(key=lambda x: distance(self.pos, x.pos))
 		foxlist.sort(key=lambda x: distance(self.pos, x.pos))
-		#waterlist.sort(key=lambda x: distance(self.pos, x.pos))
+		waterlist.sort(key=lambda x: distance(self.pos, x.pos))
 		
-		return (foodlist, rabbitlist, foxlist) 
+		return (foodlist, rabbitlist, foxlist,waterlist) 
 	
 	def eat(self, inc: float) -> None:
 		"""
@@ -130,10 +142,11 @@ class Animal:
 		Args:
 			inc (int): Amount to increase thirst
 		"""
-
+		
 		# Increment eat count
 		self.drink_count += 1
-
+		#wait for half a sec
+		self.stopwatch(0.5)
 		# Limit to 100
 		if self.thirst + inc >= 100:
 			self.thirst = 100
@@ -186,3 +199,13 @@ class Animal:
 		# 	self.hunger,
 		# 	self.state
 		# )
+
+	def stopwatch(self,seconds):
+		start = time.time()
+		time.clock()    
+		elapsed = 0
+		while elapsed < seconds:
+			elapsed = time.time() - start
+			#print "loop cycle time: %f, seconds count: %02d" % (time.clock() , elapsed) 
+			#time.sleep(1)  
+
