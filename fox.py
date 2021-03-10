@@ -8,6 +8,7 @@ from random import uniform
 WOLF_IMAGE = pygame.image.load("fox.png")
 WOLF_SIZE = 30
 WOLF_IMAGE = pygame.transform.scale(WOLF_IMAGE, (WOLF_SIZE, WOLF_SIZE))
+
 tolerance=0.1
 
 class Fox(Animal):
@@ -25,7 +26,7 @@ class Fox(Animal):
 		
 		Animal.__init__(self, world, pos, speed)
 		self.sight = 200
-
+		
 	def move(self):
 		"""
 		Moves Fox based on state
@@ -71,7 +72,7 @@ class Fox(Animal):
 			# Find closest Fox that is also REPRODUCE
 			if foxlist:
 				for w in foxlist:
-					if w.state == State.REPRODUCE:
+					if w.state == State.REPRODUCE and w.sex !=self.sexg:
 						self.target = w
 						break
 			
@@ -130,9 +131,9 @@ class Fox(Animal):
 			else:
 				self.roam_move()
 		
-		# Calculate hunger after movement
-		self.hunger -= 0.25
-		self.thirst -= 0.30
+		# Calculate hunger after movement and thirst regarding to their size and speeds
+		self.hunger -= self.size #0.25
+		self.thirst -=0.1*self.speed # 0.30
 		if self.hunger <= 0 or self.thirst<=0:
 			self.world.foxes.remove(self)
 			# Calculate thirst after movement
@@ -144,5 +145,7 @@ class Fox(Animal):
 		Args:
 			screen (pygame.Surface): The pygame surface
 		"""
-		screen.blit(WOLF_IMAGE, (self.pos[0] - WOLF_SIZE/2, self.pos[1] - WOLF_SIZE/2))
+		sc_fact=round(self.size*WOLF_SIZE)
+		wolf_im= pygame.transform.scale(WOLF_IMAGE, (sc_fact, sc_fact))
+		screen.blit(wolf_im, (self.pos[0] - WOLF_SIZE/2, self.pos[1] - WOLF_SIZE/2))
 	

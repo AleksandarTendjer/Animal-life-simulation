@@ -3,11 +3,17 @@ from enum import Enum
 from math import sin, cos, pi
 from random import uniform
 from random import choice
+from random import randint
 import time
 
 class State(Enum):
 	ROAM = 0
 	REPRODUCE = 1
+
+
+class Sex(Enum):
+	MALE = 0
+	FEMALE = 1
 
 class Animal:
 	"""Class representing Animal in the world"""
@@ -20,12 +26,14 @@ class Animal:
 			world (World): The world
 			pos ( (float, float) ): Starting position
 			speed (float): Animal speed
+			sex(SEX): Sex 
 		"""
 
 		self.speed = speed
 		self.pos = pos
 		self.world = world
-
+		self.sex = choice(list(Sex))
+		self.size=randint(5, 10)/10#uniform(0,1)
 		# Movement variables
 		self.target = None
 		self.movement_angle = uniform(0, pi*2)
@@ -202,7 +210,7 @@ class Animal:
 
 	def stopwatch(self,seconds):
 		start = time.time()
-		time.clock()    
+	#	time.clock()    
 		elapsed = 0
 		while elapsed < seconds:
 			elapsed = time.time() - start

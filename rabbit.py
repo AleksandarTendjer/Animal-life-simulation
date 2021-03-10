@@ -26,7 +26,7 @@ class Rabbit(Animal):
 		
 		Animal.__init__(self, world, pos, speed)
 		self.sight = 150
-
+	
 	def move(self) -> None:
 		"""
 		Moves Rabbit based on state
@@ -99,7 +99,7 @@ class Rabbit(Animal):
 			# Find closest Rabbit that is also REPRODUCE
 			if rabbitlist:
 				for r in rabbitlist:
-					if r.state == State.REPRODUCE:
+					if r.state == State.REPRODUCE and r.sex!=self.sex:
 						self.target = r
 						break
 			
@@ -158,9 +158,9 @@ class Rabbit(Animal):
 				self.roam_move()
 		
 		# Calculate hunger after movement
-		self.hunger -= 0.25
+		self.hunger -= self.size#0.25
 		# Calculate thirst after movement
-		self.thirst -= 0.40
+		self.thirst -= self.speed*0.1#0.40
 		if self.hunger <= 0 or self.thirst<=0:
 			self.world.rabbits.remove(self)
 
@@ -173,5 +173,6 @@ class Rabbit(Animal):
 		Args:
 			screen (pygame.Surface): The pygame surface
 		"""
-
-		screen.blit(RABBIT_IMAGE, (self.pos[0] - RABBIT_SIZE/2, self.pos[1] - RABBIT_SIZE/2))
+		sc_factor=round(self.size*RABBIT_SIZE)
+		rabbit_im= pygame.transform.scale(RABBIT_IMAGE, (sc_factor,sc_factor))
+		screen.blit(rabbit_im, (self.pos[0] - RABBIT_SIZE/2, self.pos[1] - RABBIT_SIZE/2))
