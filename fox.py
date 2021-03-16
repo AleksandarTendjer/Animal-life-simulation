@@ -72,7 +72,7 @@ class Fox(Animal):
 			# Find closest Fox that is also REPRODUCE
 			if foxlist:
 				for w in foxlist:
-					if w.state == State.REPRODUCE and w.sex !=self.sexg:
+					if w.state == State.REPRODUCE and w.sex !=self.sex:
 						self.target = w
 						break
 			

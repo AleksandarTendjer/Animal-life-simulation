@@ -1,18 +1,17 @@
 import sys
 import pygame
+from pygame import image
 from world import World
-from simstats import StatClump
+from simstats import Stats
 import os
 import argparse
 from terrain_gen import NoiseWidth
 from terrain_gen import Map2D
+import xlwt 
 
 import matplotlib.pyplot as plt
 
-#DEFAULT_SCREEN_SIZE = (800, 600)
 DEFAULT_SCREEN_SIZE = (960, 750)
-# DEFAULT_SCREEN_SIZE = (1280, 720)
-#BG_IMG = pygame.image.load("bg.jpg")
 
 
 if __name__ == "__main__":
@@ -64,14 +63,18 @@ if __name__ == "__main__":
 	noise_map.moisture_map = moisture_map
 	
 	# display map
-	tilesize=7
-	#noise_map.display_as_image(tilesize)
-	file_name = 'noise_map'
-	noise_map.save_image(file_name+'.png') # save the png too
+	tilesize=1
+	 # display map
+	noise_map.display_as_image(tilesize)
+      
+	
+	file_name = 'noise_map.png'
+	noise_map.save_image(file_name) # save the png too
 	
 	noise_map.ret_water_points()
 	
-	BG_IMG = pygame.image.load(file_name+'.png')
+	BG_IMG = pygame.image.load(file_name)
+	
 	# Start pygame
 	pygame.init()
 
@@ -84,7 +87,7 @@ if __name__ == "__main__":
 	paused = False
 
 	# Create Trackers 
-	sc = StatClump(world)
+	sc = Stats(world)
 	sc.start_all()
 
 	# Main pygame loop
@@ -119,22 +122,40 @@ if __name__ == "__main__":
 	sc.join_all()
 
 	# Create pyplot environment
-	fig, axes = plt.subplots(3, 2)
-	fig.canvas.set_window_title("Evolution Simulation Results")
+#	fig, axes = plt.subplots(3, 2)
+#	fig.canvas.set_window_title("Evolution Simulation Results")
 
 	# Place Trackers
-	sc.trackers[0].plot(axes[0, 0])	# Rabbit Count
-	sc.trackers[1].plot(axes[1, 0])	# Fox Count
-	sc.trackers[2].plot(axes[2, 0])	# Food Count
-	sc.trackers[3].plot(axes[0, 1])	# Rabbit Speed
-	sc.trackers[4].plot(axes[1, 1]) # Fox Speed
-	fig.delaxes(axes[2, 1])			# Temp delete
+	#sc.trackers[0].plot(axes[0, 0])	# Rabbit Count
+	#sc.trackers[1].plot(axes[1, 0])	# Fox Count
+	#sc.trackers[2].plot(axes[2, 0])	# Food Count
+	
+	workbook = xlwt.Workbook()  
+  
+	sheet = workbook.add_sheet("Analysis") 
+  
+	# Specifying style 
+	style = xlwt.easyxf('font: bold 1') 
+	sheet.write(0, 0,  sc.trackers[0].title) 
+	
+	for i in range(0,len(sc.trackers[0].x)):
+		sheet.write(1, i+1,  sc.trackers[0].x[i]) 
+		sheet.write(0, i+1,  sc.trackers[0].y[i]) 
+	sheet.write(2, 0,  sc.trackers[1].title) 
+	for i in range(0,len(sc.trackers[1].x)):
+		sheet.write(2, i+1,  sc.trackers[1].x[i]) 
+		sheet.write(3, i+1,  sc.trackers[1].y[i]) 
+	sheet.write(4, 0,  sc.trackers[2].title) 
+	for i in range(0,len(sc.trackers[2].x)):
+		sheet.write(4, i+1,  sc.trackers[2].x[i]) 
+		sheet.write(5, i+1,  sc.trackers[2].y[i]) 
 
-	# Show pyplot results
-	fig.tight_layout()
-	plt.show()
-
+	# Specifying column 
+	workbook.save("analysis.xls") 	
+	
+	
 	print("Simulation Finished")
+	
 	sys.exit(0)
 
 

@@ -3,12 +3,12 @@ from time import time, sleep
 
 TRACKER_TIMEOUT = 3
 
-class StatClump:
+class Stats:
 	"""Top level class holding multiple Trackers"""
 
 	def __init__(self, world):
 		"""
-		Initializes the StatClump
+		Initializes the Stats
 
 		Args:
 			world (World): The world
@@ -18,8 +18,7 @@ class StatClump:
 			RabbitCountTracker(world),
 			FoxCountTracker(world),
 			FoodCountTracker(world),
-			RabbitSpeedTracker(world),
-			FoxSpeedTracker(world)
+			
 		]
 
 	def start_all(self) -> None:
@@ -85,30 +84,7 @@ class _Tracker(Thread):
 
 		return time() - self._last_time > TRACKER_TIMEOUT
 
-	def plot(self, ax) -> None:
-		"""
-		Plots data collected to the ax
-
-		Args:
-			ax (matplotlub.axes.Axes): The axes to plot to
-		"""
-
-		ax.set_title(self.title)
-
-		if len(self.x) == 1 or len(self.y) == 1:
-			ax.text(0, 0, "NO DATA", ha="center", va="center")
-			ax.set_xlim(-1, 1)
-			ax.set_ylim(-1, 1)
-			return
-
-		ax.set_xlabel("Time (s)")
-		ax.set_ylabel(self.ylabel)
-
-		ax.xaxis.grid(True, which="major")
-		ax.yaxis.grid(True, which="major")
-
-		ax.plot(self.x, self.y)
-
+	
 class RabbitCountTracker(_Tracker):
 	"""Tracker for Rabbit count"""
 
@@ -182,7 +158,7 @@ class FoxCountTracker(_Tracker):
 			world (World): The world
 		"""
 
-		_Tracker.__init__(self, world, "Fox Count", "Wolves")
+		_Tracker.__init__(self, world, "Fox Count", "Foxes")
 
 	def run(self) -> None:
 		"""
@@ -202,84 +178,3 @@ class FoxCountTracker(_Tracker):
 				self.y.append(len(self.world.foxes))
 			sleep(1)
 
-class RabbitSpeedTracker(_Tracker):
-	"""Tracker for average Rabbit speed"""
-
-	def __init__(self, world):
-		"""
-		Initializes the RabbitSpeedTracker
-
-		Args:
-			world (World): The world
-		"""
-
-		_Tracker.__init__(self, world, "Average Rabbit Speed", "Speed")
-
-	def _average_speed(self) -> float:
-		"""
-		Calculates the average speed of Rabbits in the world
-
-		Returns:
-			float: Average Rabbit speed
-		"""
-
-		return sum([r.speed for r in self.world.rabbits]) / len(self.world.rabbits)
-
-	def run(self) -> None:
-		"""
-		Collects the average Rabbit speed at the runtime
-		"""
-
-		self.x.append(self.world.runtime / 1000)
-		self.y.append(self._average_speed())
-		last_speed = self._average_speed()
-
-		while self.world.running:
-			if self._average_speed() != last_speed or self._timeout():
-				self._last_time = time()
-				last_speed = self._average_speed()
-
-				self.x.append(self.world.runtime/1000)
-				self.y.append(last_speed)
-			sleep(1)
-
-class FoxSpeedTracker(_Tracker):
-	"""Tracker for average Fox speed"""
-
-	def __init__(self, world):
-		"""
-		Initializes the FoxSpeedTracker
-
-		Args:
-			world (World): The world
-		"""
-
-		_Tracker.__init__(self, world, "Average Fox Speed", "Speed")
-
-	def _average_speed(self) -> float:
-		"""
-		Calculates the average speed of Rabbits in the world
-
-		Returns:
-			float: Average Fox speed
-		"""
-
-		return sum([w.speed for w in self.world.foxes]) / len(self.world.foxes)
-
-	def run(self) -> None:
-		"""
-		Collects the average Fox speed at the runtime
-		"""
-
-		self.x.append(self.world.runtime / 1000)
-		self.y.append(self._average_speed())
-		last_speed = self._average_speed()
-
-		while self.world.running:
-			if self._average_speed() != last_speed or self._timeout():
-				self._last_time = time()
-				last_speed = self._average_speed()
-
-				self.x.append(self.world.runtime/1000)
-				self.y.append(last_speed)
-			sleep(1)

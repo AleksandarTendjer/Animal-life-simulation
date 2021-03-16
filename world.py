@@ -1,4 +1,5 @@
 import random
+from worldtools import *
 import pygame
 from rabbit import Rabbit
 from fox import Fox
@@ -33,6 +34,7 @@ class World():
 		self.foxes = []
 		self.food = []
 		self.landcells=[]
+		self.shorecells=[]
 		self.watercells=[]
 		self.cells=allCells
 		self._classify_terrain()
@@ -62,8 +64,9 @@ class World():
 		self.runtime += self._clock.get_time()
 		if (self.runtime - self.runtime_checkpoint) / 1000 >= 1 and len(self.food) < 80:
 			self.runtime_checkpoint = self.runtime
-			self.food.append(Food(self, self._random_pos()))
-
+			rand_pos=random.choice(self.landcells) 
+			self.food.append(Food(self,(rand_pos.x,rand_pos.y))) 
+			
 		# Move all animals
 		for rabbit in self.rabbits:
 			rabbit.move()
@@ -157,13 +160,15 @@ class World():
 			len(self.food)
 		)
 
-
 	
 	def _classify_terrain(self):
-
 		for cell in self.cells: 
-			if cell.biome!=NoiseMapBiome.OCEAN:
+			if cell.biome==NoiseMapBiome.FOREST or cell.biome==NoiseMapBiome.GRASSLAND:
 				self.landcells.append(cell)
-			else:
+			elif cell.biome==NoiseMapBiome.SHALLOWS:
+				self.shorecells.append(cell)
+			elif cell.biome==NoiseMapBiome.OCEAN:
 				self.watercells.append(cell)
 		self.cells.clear()
+	
+		

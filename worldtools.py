@@ -33,3 +33,9 @@ def variance(val1: float, val2: float, variance: float) -> float:
 	"""
 
 	return ((val1 + val2) / 2) + uniform(-(variance/2), variance/2)
+
+def contains(list: list , filter)->bool:
+    for x in list:
+        if filter(x):
+            return True
+    return False

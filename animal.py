@@ -101,7 +101,7 @@ class Animal:
 		#	water.pos=(water.x,water.y)
 		#	if self!=water and self._in_sight(water): waterlist.append(water)
 		for i in list(range(0,25)):
-			water=choice(self.world.watercells)
+			water=choice(self.world.shorecells)
 			water.pos=(water.x,water.y)
 			waterlist.append(water)
 
@@ -171,7 +171,8 @@ class Animal:
 		new_y = self.pos[1] + (self.speed * sin(self.movement_angle))
 
 		# Check if valid move
-		while not self.world.in_bounds((new_x, new_y)):
+		while self.world.in_bounds((new_x, new_y))!=True and contains(self.world.watercells, lambda x: x.x == new_x and x.y ==new_y)!=True :  # list of all elements with .n==30
+			
 			# Reset move
 			self.movement_angle += pi/2
 			new_x = self.pos[0] + (self.speed * cos(self.movement_angle))
