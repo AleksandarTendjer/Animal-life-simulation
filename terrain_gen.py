@@ -19,14 +19,7 @@ class NoiseMapBiome(Enum):
 
 
 class Cell:
-    """
-    A cell in a noise map. Consists of an X and Y position
-    as well as a noise value that can be interpreted however
-    you like.
-
-    A low noise value = low terrain, a high one = high terrain.
-    """
-
+ 
     def __init__(self, x, y, noise_value):
         self.x = x
         self.y = y
@@ -57,15 +50,9 @@ class NoiseWidth:
 
 class Map2D:
 
-    """
-    A map of Noise Mapcells.
-    """
-
+ 
     def __init__(self, width, height, noise_ranges=[], cells=[], moisture_map=None):
-        """
-        ranges = the number ranges for the different kinds of cells
-        eg. water 0.1, sand 0.25, etc as a dictionary
-        """
+ 
         self.width = width
         self.height = height
         self.noise_ranges = noise_ranges
@@ -84,13 +71,11 @@ class Map2D:
     def generate(self, scale, octaves, persistence=0.5, lacunarity=2.0, sink_edges=False):
         """
         Generates the noise map.
-
         :param scale: it's the scale of the map. Higher = zoomed in, lower = zoomed out.
         :param octaves: the level of detail. Lower = more peaks and valleys, higher = less peaks and valleys.
         :param persistence: how much an octave contributes to overall shape (adjusts amplitude).
         :param lacunarity: the level of detail on each octave (adjusts frequency).
         :param sink_edges: Sinks the edges and corners of the map into the ocean to create islands.
-        :return: None
         """
         self.scale = scale
         self.octaves = octaves
@@ -104,25 +89,7 @@ class Map2D:
                 row += [Cell(x, y, noise_value)]
             self.cells += row
            
-        # If sink edges is true, we need to sink the corners & sides of the map into the ocean
-        #
-        # 1. Generate a box that fits inside the map with a small degree of margin.
-        # 2. Generate a circle in its center
-        # 3. Use this circle to cull all cells that fall outside of it.
-        #  _ _ _ _ _ _
-        # |ooooKKKoooo|
-        # |ooKKKKKKKoo|
-        # |oKKKKKKKKKo|
-        # |ooKKKKKKKoo|
-        # |ooooKKKoooo|
-        #
-        # Something like above, where K is keep and O is ocean. Ok, awful ASCII art. I admit.
-        #
-        # http://mathcentral.uregina.ca/QQ/database/QQ.09.06/s/lori1.html
-        # 1. Find the center cell
-
-        # C=PI*d
-        # circumference = 3.14 * diameter
+       
 
     def biome(self, elevation, moisture):
         """ Determine the biome from the elevation & moisture of the cell """
@@ -151,8 +118,6 @@ class Map2D:
 
         """ Mountain """
         if elevation > self.noise_range_dict['mountain'].threshold:
-            #if moisture < 0.33:
-               # return NoiseMapBiome.TEMPERATE_DESERT
             if moisture < 0.66:
                 return NoiseMapBiome.SHRUBLAND
             return NoiseMapBiome.TAIGA
@@ -198,7 +163,7 @@ class Map2D:
             biome_color = self.get_biome_color(cell.biome)
             d.rectangle([cell.x*cell_size, cell.y*cell_size, cell.x*cell_size+cell_size, cell.y*cell_size+cell_size], fill=biome_color)
 
-        self.image.show()
+        #self.image.show()
     def chunks(self,target_list, chunk_size):
         """
         Break a big list into smaller lists.

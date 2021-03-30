@@ -1,7 +1,7 @@
 import pygame
 from worldtools import *
 from animal import State, Animal
-import statistics
+from statistics import Stats
 from math import sin, cos, pi
 from random import uniform
 

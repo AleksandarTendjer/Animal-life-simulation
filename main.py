@@ -2,12 +2,11 @@ import sys
 import pygame
 from pygame import image
 from world import World
-from simstats import Stats
+from statistics import Stats
 import os
 import argparse
 from terrain_gen import NoiseWidth
 from terrain_gen import Map2D
-import xlwt 
 
 import matplotlib.pyplot as plt
 
@@ -15,7 +14,7 @@ DEFAULT_SCREEN_SIZE = (960, 750)
 
 
 if __name__ == "__main__":
-		# generate
+	
 	# create parser
 	parser = argparse.ArgumentParser()
 	
@@ -57,12 +56,12 @@ if __name__ == "__main__":
 	noise_map.generate( scale, args.octaves, args.persistence, args.lacunarity)
 
 	# generate moisture
-	moisture_map = Map2D(DEFAULT_SCREEN_SIZE[0], DEFAULT_SCREEN_SIZE[1])
+	moisture_map = Map2D(DEFAULT_SCREEN_SIZE[0], DEFAULT_SCREEN_SIZE[1]) 
 	moisture_map.generate(moisture_scale, args.moistureo, args.moisturep, args.moisturel)
 
 	noise_map.moisture_map = moisture_map
 	
-	# display map
+	
 	tilesize=1
 	 # display map
 	noise_map.display_as_image(tilesize)
@@ -115,45 +114,13 @@ if __name__ == "__main__":
 		# FPS control
 		clock.tick(30)
 
-	# Exit pygame
-	pygame.quit()
-
+	
+	
 	# join all Trackers
 	sc.join_all()
+	sc.menu_show()
+	
 
-	# Create pyplot environment
-#	fig, axes = plt.subplots(3, 2)
-#	fig.canvas.set_window_title("Evolution Simulation Results")
-
-	# Place Trackers
-	#sc.trackers[0].plot(axes[0, 0])	# Rabbit Count
-	#sc.trackers[1].plot(axes[1, 0])	# Fox Count
-	#sc.trackers[2].plot(axes[2, 0])	# Food Count
-	
-	workbook = xlwt.Workbook()  
-  
-	sheet = workbook.add_sheet("Analysis") 
-  
-	# Specifying style 
-	style = xlwt.easyxf('font: bold 1') 
-	sheet.write(0, 0,  sc.trackers[0].title) 
-	
-	for i in range(0,len(sc.trackers[0].x)):
-		sheet.write(1, i+1,  sc.trackers[0].x[i]) 
-		sheet.write(0, i+1,  sc.trackers[0].y[i]) 
-	sheet.write(2, 0,  sc.trackers[1].title) 
-	for i in range(0,len(sc.trackers[1].x)):
-		sheet.write(2, i+1,  sc.trackers[1].x[i]) 
-		sheet.write(3, i+1,  sc.trackers[1].y[i]) 
-	sheet.write(4, 0,  sc.trackers[2].title) 
-	for i in range(0,len(sc.trackers[2].x)):
-		sheet.write(4, i+1,  sc.trackers[2].x[i]) 
-		sheet.write(5, i+1,  sc.trackers[2].y[i]) 
-
-	# Specifying column 
-	workbook.save("analysis.xls") 	
-	
-	
 	print("Simulation Finished")
 	
 	sys.exit(0)

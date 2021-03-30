@@ -1,5 +1,5 @@
 import pygame
-import statistics
+from statistics import Stats
 from worldtools import *
 from math import sin, cos, atan2, pi
 from random import uniform
@@ -167,12 +167,6 @@ class Rabbit(Animal):
 		
 				
 	def draw(self, screen: pygame.Surface) -> None:
-		"""
-		Draws Rabbit to the screen
-
-		Args:
-			screen (pygame.Surface): The pygame surface
-		"""
 		sc_factor=round(self.size*RABBIT_SIZE)
 		rabbit_im= pygame.transform.scale(RABBIT_IMAGE, (sc_factor,sc_factor))
 		screen.blit(rabbit_im, (self.pos[0] - RABBIT_SIZE/2, self.pos[1] - RABBIT_SIZE/2))
