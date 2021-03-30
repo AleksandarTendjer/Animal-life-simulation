@@ -47,9 +47,9 @@ class Stats:
 	def menu_show(self):
 		menu = pyMenu.Menu(600, 600, 'Simulation data analysis',
 						theme=pyMenu.themes.THEME_SOLARIZED)
-		menu.add.dropselect('Statistics :', [('Fox', 1), ('Rabbit', 2),('Food',3),('General data', 4)])#, onchange=set_element())
-		menu.add.button('Draw data')
-		menu.add.button('ExcelExport',self.outputExcel)
+		menu.add.dropselect('Statistics for feature :', [('speed', 1), ('hunger', 2),('thirst',3),('size', 4)])#, onchange=set_element())
+		menu.add.button('Draw statistics for feature')
+		menu.add.button('Excel Export',self.outputExcel)
 		menu.add.button('Exit', self.exit)
 		menu.mainloop(self.world.screen)
 
@@ -77,12 +77,12 @@ class Stats:
 		style = xlwt.easyxf('font: bold 1') 
 		
 		sheet.write(0, 0,  'time') 	
-		sheet.write(1, 0,  self.trackers[1].title) 
-		sheet.write(2, 0, 'speed avg') 	
-		sheet.write(3, 0, 'thirst avg') 	
-		sheet.write(4, 0, 'hunger avg')
-		sheet.write(5, 0, 'male count avg')
-		sheet.write(6, 0, 'female count avg')
+		sheet.write(0, 1,  self.trackers[1].title) 
+		sheet.write(0, 2, 'speed avg') 	
+		sheet.write(0, 3, 'thirst avg') 	
+		sheet.write(0, 4, 'hunger avg')
+		sheet.write(0, 5, 'male count avg')
+		sheet.write(0, 6, 'female count avg')
 
 		for i in range(0,len(self.trackers[1].x)):
 			sheet.write(i+1,0 ,  self.trackers[1].x[i]) 
@@ -99,21 +99,21 @@ class Stats:
 		
 		#rabbit
 		sheet.write(0, 0,  'time') 
-		sheet.write(1, 0,  self.trackers[0].title) 
-		sheet.write(2, 0, 'speed avg') 	
-		sheet.write(3, 0, 'thirst avg') 	
-		sheet.write(4, 0, 'hunger avg')
-		sheet.write(5, 0, 'male count avg')
-		sheet.write(6, 0, 'female count avg')
+		sheet.write(0, 1,  self.trackers[0].title) 
+		sheet.write(0, 2, 'speed avg') 	
+		sheet.write(0, 3, 'thirst avg') 	
+		sheet.write(0, 4, 'hunger avg')
+		sheet.write(0, 5, 'male count avg')
+		sheet.write(0, 6, 'female count avg')
 	
 		for i in range(0,len(self.trackers[0].x)):
 			sheet.write( i+1,0,  self.trackers[0].x[i]) 
-			sheet.write( i+1, 0,  self.trackers[0].y[i]) 
-			sheet.write( i+1,0,  self.trackers[0].speed_avg[i]) 
-			sheet.write( i+1,0,  self.trackers[0].thirst_avg[i])
-			sheet.write( i+1,0,  self.trackers[0].hunger_avg[i])
-			sheet.write( i+1,0,  self.trackers[0].male_count[i])
-			sheet.write( i+1,0,  self.trackers[0].female_count[i])
+			sheet.write( i+1, 1,  self.trackers[0].y[i]) 
+			sheet.write( i+1,2,  self.trackers[0].speed_avg[i]) 
+			sheet.write( i+1,3,  self.trackers[0].thirst_avg[i])
+			sheet.write( i+1,4,  self.trackers[0].hunger_avg[i])
+			sheet.write( i+1,5,  self.trackers[0].male_count[i])
+			sheet.write( i+1,6,  self.trackers[0].female_count[i])
 		workbook.save("analysis_rabbit.xls") 
 
 			
