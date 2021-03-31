@@ -7,12 +7,19 @@ import os
 import argparse
 from terrain_gen import NoiseWidth
 from terrain_gen import Map2D
+import pygame_menu as pyMenu 
 
 import matplotlib.pyplot as plt
 
 DEFAULT_SCREEN_SIZE = (960, 750)
 
-
+'''def menu_show(world):
+	menu = pyMenu.Menu(600, 600, 'Simulation data analysis',
+					theme=pyMenu.themes.THEME_SOLARIZED)
+	menu.add.button('Start Simulation',pyMenu.events.MenuAction._action.)
+	menu.add.button('Exit', pyMenu.events.EXIT)
+	menu.mainloop(world.screen)
+'''
 if __name__ == "__main__":
 	
 	# create parser
@@ -60,7 +67,7 @@ if __name__ == "__main__":
 	moisture_map.generate(moisture_scale, args.moistureo, args.moisturep, args.moisturel)
 
 	noise_map.moisture_map = moisture_map
-	
+
 	
 	tilesize=1
 	 # display map
@@ -83,6 +90,7 @@ if __name__ == "__main__":
 
 	# Create world
 	world = World(DEFAULT_SCREEN_SIZE, clock, screen,noise_map.cells)
+	#menu_show(world)
 	paused = False
 
 	# Create Trackers 
@@ -124,5 +132,7 @@ if __name__ == "__main__":
 	print("Simulation Finished")
 	
 	sys.exit(0)
+
+
 
 

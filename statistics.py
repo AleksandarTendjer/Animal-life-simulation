@@ -4,7 +4,10 @@ from animal import Sex
 import pygame_menu as pyMenu 
 import pygame
 import sys
-import xlwt 
+import xlwt
+import matplotlib.pyplot as plt
+from datetime import datetime
+
 
 TRACKER_TIMEOUT = 3
 
@@ -25,7 +28,7 @@ class Stats:
 			FoodAvgTracker(world),
 			
 		]
-	
+		self.element=dict()	
 	
 
 	def start_all(self) -> None:
@@ -47,9 +50,9 @@ class Stats:
 	def menu_show(self):
 		menu = pyMenu.Menu(600, 600, 'Simulation data analysis',
 						theme=pyMenu.themes.THEME_SOLARIZED)
-		menu.add.dropselect('Statistics for feature :', [('speed', 1), ('hunger', 2),('thirst',3),('size', 4)])#, onchange=set_element())
-		menu.add.button('Draw statistics for feature')
-		menu.add.button('Excel Export',self.outputExcel)
+		menu.add.dropselect('Statistics for feature :', [('speed', 1), ('hunger', 2),('thirst',3),('size', 4),('count', 5)], onchange=self.set_element)
+		menu.add.button('Draw statistics for feature',self.draw_graph)
+		menu.add.button('Excel Export',self.output_Excel)
 		menu.add.button('Exit', self.exit)
 		menu.mainloop(self.world.screen)
 
@@ -58,11 +61,47 @@ class Stats:
 		pyMenu.events.EXIT
 		pygame.quit()
 		sys.exit(0)
+	def set_element(self,value,number):
+		self.element=dict(val=value,num=number)
+		print("value is: ")
+		print(value)
+	def draw_graph(self):
 
-	def outputExcel(self):
+		if self.element['val'][0][0]=='speed':
+			plt.plot(self.trackers[0].speed_avg,self.trackers[0].x, "-b", label='rabbit')
+			plt.plot(self.trackers[1].speed_avg,self.trackers[1].x, "-r", label='fox')
+		elif self.element['val'][0][0]=='hunger':
+			plt.plot(self.trackers[0].hunger_avg,self.trackers[0].x , "-b",label='rabbit')
+			plt.plot(self.trackers[1].hunger_avg,self.trackers[1].x, "-r", label='fox')
+		elif self.element['val'][0][0]=='thirst':
+			plt.plot(self.trackers[0].thirst_avg,self.trackers[0].x, "-b", label='rabbit')
+			plt.plot(self.trackers[1].thirst_avg,self.trackers[1].x, "-r", label='fox')
+		elif self.element['val'][0][0]=='size':
+			plt.plot(self.trackers[0].size_avg,self.trackers[0].x, "-b", label='rabbit')
+			plt.plot(self.trackers[1].size_avg,self.trackers[1].x, "-r", label='fox')
+		elif self.element['val'][0][0]=='count':
+			plt.plot(self.trackers[0].y,self.trackers[0].x, "-b", label='rabbit')
+			plt.plot(self.trackers[1].y,self.trackers[1].x, "-r", label='fox')
+
+			 
+		# naming the x axis
+		plt.xlabel('time')
+		# naming the y axis
+		plt.ylabel(self.element['val'][0][0])
+		
+		# giving a title to my graph
+		plt.title(self.element['val'][0][0]+' time')
+		
+		# function to show the plot
+		plt.show()		
+	def output_Excel(self):
 		# Specifying style 
-		workbook = xlwt.Workbook()  
+		workbook = xlwt.Workbook()
+		now = datetime.now()  
+		current_time = now.strftime("%H%M%S")
+	
 		sheet = workbook.add_sheet("Analysis_food") 
+	
 		style = xlwt.easyxf('font: bold 1') 
 		sheet.write(0, 0,  self.trackers[2].title) 
 		sheet.write(0, 1,  'time') 	
@@ -71,7 +110,7 @@ class Stats:
 			sheet.write(i+1,1 , self.trackers[2].x[i]) 
 			sheet.write( i+1,0,  self.trackers[2].y[i]) 
 
-		workbook.save("analysis_food.xls") 
+		workbook.save('analysis_food'+current_time+'.xls') 
 		
 		sheet = workbook.add_sheet("Analysis_fox") 
 		style = xlwt.easyxf('font: bold 1') 
@@ -92,7 +131,9 @@ class Stats:
 			sheet.write(i+1,4  ,self.trackers[1].hunger_avg[i])
 			sheet.write(i+1,5  ,self.trackers[1].male_count[i])
 			sheet.write(i+1,6  ,self.trackers[1].female_count[i]) 
-		workbook.save("analysis_fox.xls") 
+
+	
+		workbook.save('analysis_fox'+current_time+'.xls') 
 
 		sheet = workbook.add_sheet("Analysis_rabbit") 
 		style = xlwt.easyxf('font: bold 1') 
@@ -114,7 +155,7 @@ class Stats:
 			sheet.write( i+1,4,  self.trackers[0].hunger_avg[i])
 			sheet.write( i+1,5,  self.trackers[0].male_count[i])
 			sheet.write( i+1,6,  self.trackers[0].female_count[i])
-		workbook.save("analysis_rabbit.xls") 
+		workbook.save('analysis_rabbit'+current_time+'.xls') 
 
 			
 

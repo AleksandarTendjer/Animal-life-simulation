@@ -43,7 +43,7 @@ class World():
 			rand_pos=random.choice(self.landcells) 	
 			self.rabbits.append(Rabbit(self, (rand_pos.x,rand_pos.y),self._random_speed() ))#2.5
 
-		for _ in range(6):
+		for _ in range(12):
 			rand_pos=random.choice(self.landcells) 	
 			self.foxes.append(Fox(self, (rand_pos.x,rand_pos.y), self._random_speed())) #3 self._random_pos()
 
